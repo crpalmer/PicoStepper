@@ -112,7 +112,7 @@ static PicoStepper picostepper_init_unclaimed_device() {
   uint drq_source = (pio_id * 8) + statemachine;
   channel_config_set_dreq(&dma_conf, drq_source);
   dma_channel_set_irq0_enabled(dma_ch, true);
-  irq_set_exclusive_handler(DMA_IRQ_0, picostepper_async_handler);
+  irq_add_shared_handler(DMA_IRQ_0, picostepper_async_handler, PICO_SHARED_IRQ_HANDLER_DEFAULT_ORDER_PRIORITY);
   irq_set_enabled(DMA_IRQ_0, true);
   // Update the state of the device and mark it as allocated
   psc.map_dma_ch_to_device_index[dma_ch] = unclaimed_device_index;
