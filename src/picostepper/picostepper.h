@@ -66,11 +66,6 @@ typedef enum PicoStepperMotorType_def PicoStepperMotorType;
 extern struct PicoStepperContainer psc;
 extern bool psc_is_initialised;
 
-static void picostepper_async_handler();
-static PicoStepperRawDevice picostepper_create_raw_device();
-static void picostepper_psc_init();
-static PicoStepper picostepper_init_unclaimed_device();
-
 PicoStepper picostepper_init(uint base_pin, PicoStepperMotorType driver);
 bool picostepper_move_blocking(PicoStepper device, uint steps, bool direction, uint delay, int delay_change);
 void picostepper_set_async_direction(PicoStepper device, bool direction);
