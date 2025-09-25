@@ -8,6 +8,10 @@
 #ifndef PICOSTEPPER_H
 #define PICOSTEPPER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdbool.h>
 #include "pico/stdlib.h"
@@ -73,5 +77,9 @@ void picostepper_set_async_enabled(PicoStepper device, bool enabled);
 void picostepper_set_async_delay(PicoStepper device, uint delay);
 int picostepper_convert_speed_to_delay(float steps_per_second);
 bool picostepper_move_async(PicoStepper device, int steps, PicoStepperCallback func);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
