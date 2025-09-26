@@ -34,7 +34,7 @@ static void picostepper_async_handler() {
     // Invoke callback for device
     psc.devices[device].is_running = false;
     if(psc.devices[device].callback != NULL) {
-      (*psc.devices[device].callback)(device);
+      (*psc.devices[device].callback)(device, psc.devices[device].user_data);
     }
   }
 }
@@ -50,6 +50,7 @@ static PicoStepperRawDevice picostepper_create_raw_device() {
   psrq.command = 0;
   psrq.pio_id = -1;
   psrq.callback = NULL;
+  psrq.user_data = NULL;
   psrq.dma_config = dma_channel_get_default_config(0);
   psrq.delay = 1;
   return psrq;
@@ -228,13 +229,14 @@ int picostepper_convert_speed_to_delay(float steps_per_second) {
 
 
 // Move the stepper ans imidiatly return from function without waiting for the movement to finish
-bool picostepper_move_async(PicoStepper device, int steps, PicoStepperCallback func) {
+bool picostepper_move_async(PicoStepper device, int steps, PicoStepperCallback func, void *user_data) {
 
   if(psc.devices[device].is_running || !psc.devices[device].is_configured ) {
     return false;
   }
 
   psc.devices[device].callback = func;
+  psc.devices[device].user_data = user_data;
     
   if(psc.devices[device].pio_id == 0) {
     dma_channel_configure(

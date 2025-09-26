@@ -29,7 +29,7 @@ extern "C" {
 typedef int PicoStepper;
 
 // A function to call after a async movement has finished
-typedef void (*PicoStepperCallback)(PicoStepper);
+typedef void (*PicoStepperCallback)(PicoStepper, void *user_data);
 
 // State and executing hardware of a StepperDevice
 struct picostepper_raw_device_def {
@@ -46,6 +46,7 @@ struct picostepper_raw_device_def {
   dma_channel_config dma_config;
   uint32_t command;
   PicoStepperCallback callback;
+  void *user_data;
 };
 typedef struct picostepper_raw_device_def PicoStepperRawDevice;
 
@@ -76,7 +77,7 @@ void picostepper_set_async_direction(PicoStepper device, bool direction);
 void picostepper_set_async_enabled(PicoStepper device, bool enabled);
 void picostepper_set_async_delay(PicoStepper device, uint delay);
 int picostepper_convert_speed_to_delay(float steps_per_second);
-bool picostepper_move_async(PicoStepper device, int steps, PicoStepperCallback func);
+bool picostepper_move_async(PicoStepper device, int steps, PicoStepperCallback func, void *user_data);
 
 #ifdef __cplusplus
 };
