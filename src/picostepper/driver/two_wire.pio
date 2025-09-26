@@ -37,7 +37,7 @@ picostepper_direction_0_loop:
       pio_sm_config c = picostepper_two_wire_program_get_default_config(offset);
       
       // Pio frequency is 125 MHz. With a 125 divisor it works at 1MHz, and the settled delay in us at picostepper class fits with the expected.  
-      sm_config_set_clkdiv_int_frac(&c, 125, 0);
+      sm_config_set_clkdiv_int_frac(&c, SYS_CLK_MHZ, 0);
       sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
 
       // SET PINS
