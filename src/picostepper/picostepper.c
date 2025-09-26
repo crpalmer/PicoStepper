@@ -10,7 +10,7 @@
 // Object containing all status-data and device-handles
 struct PicoStepperContainer psc;
 bool psc_is_initialised = false;
-
+static int driver_running_time;
 
 static void picostepper_async_handler() {
   // Safe interrupt value and clear the interrupt
@@ -135,10 +135,12 @@ PicoStepper picostepper_init(uint base_pin, PicoStepperMotorType driver) {
   switch(driver){
     case FourWireDriver: 
       picostepper_driver_program = &picostepper_four_wire_program;
+      driver_running_time = 10;
       break;
 
     case TwoWireDriver: 
       picostepper_driver_program = &picostepper_two_wire_program;
+      driver_running_time = 20;
       break;
 
     // Other drivers are not yet implemented
@@ -171,6 +173,8 @@ PicoStepper picostepper_init(uint base_pin, PicoStepperMotorType driver) {
 // Warning: Care must be taken whan configurating a delay_change value to
 //          prevent integer under or overflows in the resulting delay!!! 
 bool picostepper_move_blocking(PicoStepper device, uint steps, bool direction, uint delay, int delay_change) {
+  delay -= driver_running_time;
+
   //Error: picostepper delay to big (greater than (2^30)-1
   if (delay > 1073741823) {
       return false;
@@ -218,6 +222,7 @@ void picostepper_set_async_enabled(PicoStepper device, bool enabled) {
 // Set the delay between steps used by picostepper_move_async.
 // Can be set during a running async movement.
 void picostepper_set_async_delay(PicoStepper device, uint delay) {
+  delay -= driver_running_time;
   psc.devices[device].delay = delay;
   psc.devices[device].command = (((psc.devices[device].delay << 1) | psc.devices[device].direction) << 1 )| psc.devices[device].enabled;
 }
